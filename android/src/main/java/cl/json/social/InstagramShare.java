@@ -34,6 +34,27 @@ public class InstagramShare extends SingleShareIntent {
         } catch (Exception e) {
             Log.w("RNShare", e.getMessage());
         }
+
+        this.intent.putExtra("bottom_background_color", "#906df4");
+        this.intent.putExtra("top_background_color", "#837DF4");
+        
+        Boolean hasBackgroundAsset = this.hasValidKey("backgroundImage", options)
+                || this.hasValidKey("backgroundVideo", options);
+
+        if (hasBackgroundAsset) {
+            String backgroundFileName = "";
+
+            if (this.hasValidKey("backgroundImage", options)) {
+                backgroundFileName = options.getString("backgroundImage");
+            } else if (this.hasValidKey("backgroundVideo", options)) {
+                backgroundFileName = options.getString("backgroundVideo");
+            }
+
+            ShareFile backgroundAsset = new ShareFile(backgroundFileName, "image/jpeg", "background" , this.reactContext);
+
+            this.intent.setDataAndType(backgroundAsset.getURI(), backgroundAsset.getType());
+            this.intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
         this.openIntentChooser();
     }
 
